@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.mapper.IssueMapper">
+
+
+     <select id="getList" parameterType="Long" resultType="com.example.demo.entity.Issue">
+       select *
+        from issue AS t1
+        WHERE t1.dele_flag!=1
+    </select>
+
+    <select id="addIssues">
+       INSERT INTO issue 
+       <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="record.dealing != null and record.dealing != ''">
+                    dealing,
+                </if>
+                <if test="record.status != null and record.status != ''">
+                    status,
+                </if>
+                <if test="record.img != null and record.img != ''">
+                    img,
+                </if>
+            </trim>
+             <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="record.dealing != null and record.dealing != ''">
+                    #{record.dealing},
+                </if>
+                <if test="record.status != null and record.status != ''">
+                    #{record.status},
+                </if>
+                <if test="record.img != null and record.img != ''">
+                    #{record.img},
+                </if>
+            </trim>
+    </select>
+
+    <update id="updateIssues">
+       UPDATE issue 
+       <set>
+        <if test="record.status != null">status = #{record.status},</if>
+        <if test="record.img != null">img = #{record.img},</if>
+        <if test="record.dealing != null">dealing = #{record.dealing},</if>
+        </set>
+        WHERE id=#{id}
+    </update>
+
+    <update id="deletIssues">
+        UPDATE issue 
+       <set>
+            dele_flag = 1
+        </set>
+        WHERE id=#{id}
+    </update>
+</mapper>

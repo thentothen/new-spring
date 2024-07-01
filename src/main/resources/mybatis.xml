@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!-- 数据库连接信息 -->
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="com.zaxxer.HikariDataSource">
+                <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+                <property name="jdbcUrl" value="jdbc:mysql://localhost:3306"/>
+                <property name="username" value="root"/>
+                <property name="password" value="123456"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <!-- 扫描映射文件 -->
+    <mappers>
+        <mapper resource="com/example/demo/mapper/ServiceAreaMapper.xml"/>
+    </mappers>
+    <settings>
+        <setting name="mapUnderscoreToCamelCase" value="true">
+
+        </setting>
+    </settings>
+    
+</configuration>

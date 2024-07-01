@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.mapper.ServiceAreaMapper">
+
+
+     <select id="getAreaList" parameterType="Long" resultType="com.example.demo.entity.Area">
+       select
+        t1.*,
+        COALESCE(t2.customers, 0) AS customers
+        from service_area AS t1
+        LEFT JOIN (SELECT area_id, count(area_id) AS customers FROM customers GROUP BY area_id) AS t2
+        ON t1.id = t2.area_id
+    </select>
+</mapper>
