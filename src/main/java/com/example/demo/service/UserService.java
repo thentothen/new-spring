@@ -13,7 +13,9 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.demo.entity.User;
 import com.example.demo.mapper.UserMapper;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -30,10 +32,10 @@ import java.util.Map;
 public class UserService {
 
 
-     public static final String SECRET = "JKKLJOoasdlfj";
-    /** token 过期时间: 10天 */
-    public static final int calendarField = Calendar.DATE;
-    public static final int calendarInterval = 10;
+    public static final String SECRET = "JKKLJOoasdlfj";
+    /** token 过期时间: 1小时 */
+    public static final int calendarField = Calendar.HOUR;
+    public static final int calendarInterval = 24;
 
     @Autowired
     private RedisService redisService;
@@ -41,23 +43,27 @@ public class UserService {
     @Autowired
     private UserMapper userMapper;
 
-    public boolean login(String username, String password, HttpServletRequest request){
+    public boolean login(String username, String password, HttpServletRequest request, HttpServletResponse response){
         User user = userMapper.getUserInfo(username);
         
         if(generate(password).equals(user.getPassword())){
             jakarta.servlet.http.HttpSession session = request.getSession();
             session.setAttribute("username", username);
             try {
-                String token = createToken(user.getId());
+                String token = createToken(user.getId(), user.getUsername());
                 System.out.println(token);
-                
-                List<String> tokenList = redisService.getList("token");
+
+                List<String> tokenList = redisService.getList("Token");
                 if(tokenList == null) tokenList = new ArrayList<String>();
                 tokenList.add(token);
                 
-                redisService.setList("token",tokenList);
+                redisService.setList("Token",tokenList);
 
-                session.setAttribute("token", token);
+                session.setAttribute("Token", token);
+                
+                Cookie cookie = new Cookie("Token", token);
+                cookie.setPath("/");
+                response.addCookie(cookie);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -80,7 +86,7 @@ public class UserService {
         
     }
 
-      public static String createToken(Long user_id) throws Exception {
+      public static String createToken(Long user_id, String user_name) throws Exception {
         Date iatDate = new Date();
         // expire time
         Calendar nowTime = Calendar.getInstance();
@@ -96,7 +102,9 @@ public class UserService {
         // param backups {iss:Service, aud:APP}
         String token = JWT.create().withHeader(map) // header
                 .withClaim("iss", "Service") // payload
-                .withClaim("aud", "APP").withClaim("user_id", null == user_id ? null : user_id.toString())
+                .withClaim("aud", "APP")
+                .withClaim("user_id", null == user_id ? null : user_id.toString())
+                .withClaim("user_name", null == user_name ? null : user_name.toString())
                 .withIssuedAt(iatDate) // sign time
                 .withExpiresAt(expiresDate) // expire time
                 .sign(Algorithm.HMAC256(SECRET)); // signature
