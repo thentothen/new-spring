@@ -1,7 +1,6 @@
 package com.example.demo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 
@@ -33,7 +32,7 @@ public class UserService {
 
 
     public static final String SECRET = "JKKLJOoasdlfj";
-    /** token 过期时间: 1小时 */
+    /** token 过期时间: 24小时 */
     public static final int calendarField = Calendar.HOUR;
     public static final int calendarInterval = 24;
 
@@ -103,8 +102,8 @@ public class UserService {
         String token = JWT.create().withHeader(map) // header
                 .withClaim("iss", "Service") // payload
                 .withClaim("aud", "APP")
-                .withClaim("user_id", null == user_id ? null : user_id.toString())
-                .withClaim("user_name", null == user_name ? null : user_name.toString())
+                .withClaim("user_id", user_id == null ? null : user_id.toString())
+                .withClaim("user_name", user_name == null ? null : user_name.toString())
                 .withIssuedAt(iatDate) // sign time
                 .withExpiresAt(expiresDate) // expire time
                 .sign(Algorithm.HMAC256(SECRET)); // signature

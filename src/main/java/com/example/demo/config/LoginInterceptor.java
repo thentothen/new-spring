@@ -37,7 +37,6 @@ public class LoginInterceptor implements HandlerInterceptor {
         List<String> tokenList = redisService.getList("Token");
         System.out.println(tokenList);
         
-        
         Cookie[] cookie = request.getCookies();
         for (int i = 0; i < cookie.length; i++) {
             Cookie cook = cookie[i];

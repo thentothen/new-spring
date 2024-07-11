@@ -36,6 +36,7 @@ public class RedisService {
         redisTemplate.opsForValue().set(key, value);
     }
 
+    @SuppressWarnings("unchecked")
     public List<String> getList(String key) {
         return (List<String>) redisTemplate.opsForValue().get(key);
     }
