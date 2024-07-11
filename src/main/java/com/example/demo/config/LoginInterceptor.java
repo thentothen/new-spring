@@ -42,15 +42,16 @@ public class LoginInterceptor implements HandlerInterceptor {
         for (int i = 0; i < cookie.length; i++) {
             Cookie cook = cookie[i];
             if (cook.getName().equals("Token")) {
-                String inTokenList = tokenList.stream().filter(_i->_i==cook.getValue().toString()).findFirst().toString();
-
+                Boolean inTokenList = tokenList.stream()
+                                                .anyMatch(_i->_i.equals(cook.getValue().toString()));
+                
                 try {
                     Map<String, Claim> claims = verifyToken(cook.getValue());
 
                     System.out.println(claims.get("user_id").asString());        
                     System.out.println(claims.get("user_name").asString());  
                     
-                    if (inTokenList != null) {
+                    if (inTokenList) {
                         return true; 
                     }      
                 } catch (Exception e) {
