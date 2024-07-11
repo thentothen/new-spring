@@ -12,6 +12,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+
 
 
 @RestController
@@ -26,4 +28,14 @@ public class UserController {
         jsonObject.put("data", userService.login(user.getUsername(),user.getPassword(), request, response));
         return jsonObject;
     }
+    
+    @GetMapping("/cleanToken")
+    public JSONObject cleanToken() {
+        userService.cleanToken();
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("data", 1);
+        return jsonObject;
+    }
+    
 }

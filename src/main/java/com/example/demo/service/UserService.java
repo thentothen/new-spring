@@ -25,6 +25,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -42,6 +44,10 @@ public class UserService {
     @Autowired
     private UserMapper userMapper;
 
+    public void cleanToken(){
+        redisService.setList("Token", new ArrayList<>());
+    }
+
     public boolean login(String username, String password, HttpServletRequest request, HttpServletResponse response){
         User user = userMapper.getUserInfo(username);
         
@@ -51,18 +57,28 @@ public class UserService {
             try {
                 String token = createToken(user.getId(), user.getUsername());
                 System.out.println(token);
+                
+                List<String> tokenList = Optional.ofNullable(redisService.getList("Token")).orElse(new ArrayList<>())  ;
 
-                List<String> tokenList = redisService.getList("Token");
-                if(tokenList == null) tokenList = new ArrayList<String>();
                 tokenList.add(token);
                 
-                redisService.setList("Token",tokenList);
+                Cookie[] cookie = request.getCookies();
+                for (int i = 0; i < cookie.length; i++) {
+                    Cookie cook = cookie[i];
+                    if (cook.getName().equals("Token")) {
+                        tokenList= tokenList.stream()
+                                            .filter(val->!val.equals(cook.getValue().toString()))
+                                            .collect(Collectors.toList());
+                    }
+                }
 
+                redisService.setList("Token",tokenList);
+                
                 session.setAttribute("Token", token);
                 
-                Cookie cookie = new Cookie("Token", token);
-                cookie.setPath("/");
-                response.addCookie(cookie);
+                Cookie cookie1 = new Cookie("Token", token);
+                cookie1.setPath("/");
+                response.addCookie(cookie1);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -102,6 +118,7 @@ public class UserService {
         String token = JWT.create().withHeader(map) // header
                 .withClaim("iss", "Service") // payload
                 .withClaim("aud", "APP")
+                .withClaim("type", "sso")
                 .withClaim("user_id", user_id == null ? null : user_id.toString())
                 .withClaim("user_name", user_name == null ? null : user_name.toString())
                 .withIssuedAt(iatDate) // sign time

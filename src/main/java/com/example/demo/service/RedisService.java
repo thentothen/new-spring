@@ -40,4 +40,9 @@ public class RedisService {
     public List<String> getList(String key) {
         return (List<String>) redisTemplate.opsForValue().get(key);
     }
+
+    public Object get(String string) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'get'");
+    }
 }
