@@ -10,11 +10,11 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.demo.service.RedisService;
+import com.example.demo.utils.StaticVal;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpSession;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -23,8 +23,6 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 public class LoginInterceptor implements HandlerInterceptor {
 
-    public static final String SECRET = "JKKLJOoasdlfj";
-    
     @Autowired
     private RedisService redisService;
 
@@ -70,7 +68,7 @@ public class LoginInterceptor implements HandlerInterceptor {
     public static Map<String, Claim> verifyToken(String token) {
         DecodedJWT jwt = null;
         try {
-            JWTVerifier verifier = JWT.require(Algorithm.HMAC256(SECRET)).build();
+            JWTVerifier verifier = JWT.require(Algorithm.HMAC256(StaticVal.SECRET)).build();
             jwt = verifier.verify(token);
             System.out.println("start:  "+jwt.getIssuedAt());
             System.out.println("end: "+jwt.getExpiresAt());

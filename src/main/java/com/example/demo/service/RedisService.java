@@ -1,11 +1,18 @@
 package com.example.demo.service;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+
+import com.example.demo.utils.TokenUtil;
 
 @Service
 public class RedisService {
@@ -36,9 +43,20 @@ public class RedisService {
         redisTemplate.opsForValue().set(key, value);
     }
 
-    @SuppressWarnings("unchecked")
     public List<String> getList(String key) {
-        return (List<String>) redisTemplate.opsForValue().get(key);
+        if(redisTemplate.opsForValue().get(key) == null) return new ArrayList<>();
+        
+        @SuppressWarnings({ "unchecked", "null" })
+        List<String> list = ((Collection<String>) redisTemplate.opsForValue().get(key)).stream().filter(i->{
+            try {
+                TokenUtil.verifyToken(i);
+                return true;
+            } catch (Exception e) {
+                return false;
+            }
+        }).collect(Collectors.toList());
+        this.setList(key, list);
+        return list;
     }
 
     public Object get(String string) {

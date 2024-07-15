@@ -11,6 +11,7 @@ import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.demo.entity.User;
 import com.example.demo.mapper.UserMapper;
+import com.example.demo.utils.StaticVal;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,7 +34,8 @@ import java.util.stream.Collectors;
 public class UserService {
 
 
-    public static final String SECRET = "JKKLJOoasdlfj";
+    public static final String SECRET = StaticVal.SECRET;
+    
     /** token 过期时间: 24小时 */
     public static final int calendarField = Calendar.HOUR;
     public static final int calendarInterval = 24;
@@ -50,7 +52,7 @@ public class UserService {
 
     public boolean login(String username, String password, HttpServletRequest request, HttpServletResponse response){
         User user = userMapper.getUserInfo(username);
-        
+
         if(generate(password).equals(user.getPassword())){
             jakarta.servlet.http.HttpSession session = request.getSession();
             session.setAttribute("username", username);
