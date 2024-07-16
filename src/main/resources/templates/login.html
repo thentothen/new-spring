@@ -82,14 +82,19 @@
                     username: $('#username').val(),
                     password: $('#password').val()
                 }),
-                success: function(){
-                    if(Location.search){
-                        location.search.split('?').forEach(item=>{
-                            if(item.split('=')[0]==='redirect'){
-                                window.Location.href = item.split('=')[1]
-                            }
-                        })
+                success: function(res){
+                    if(res.data){
+                        alert("登录成功");
+
+                        if(Location.search) {
+                            location.search.split('?').forEach(item=>{
+                                if(item.split('=')[0]==='redirect'){
+                                    window.Location.href = item.split('=')[1]
+                                }
+                            })
+                        }
                     }
+                   
                 }
             })
         }

@@ -17,7 +17,7 @@ import java.sql.Date;
 
 @RestController
 @RequestMapping("/upload")
-public class Upload {
+public class UploadController {
 
      // 上传文件保存的目录
      private static final String UPLOAD_DIR = "E:/work/newspring/demo/uploads/images/";

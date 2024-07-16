@@ -8,7 +8,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class User {
+public class LoginData {
     private Long id;
     private String username;
+    private String password;
 }

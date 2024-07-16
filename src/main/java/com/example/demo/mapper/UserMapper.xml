@@ -3,10 +3,17 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.demo.mapper.UserMapper">
-     <select id="getUserInfo" resultType="com.example.demo.entity.User">
+     <select id="getLoginData" resultType="com.example.demo.entity.LoginData">
        select *
         from user AS t1
         WHERE t1.username=#{username}
+        Limit 1
+    </select>
+     <select id="getUserById" resultType="com.example.demo.entity.User">
+       select 
+        *
+        from user AS t1
+        WHERE t1.id=#{userId}
         Limit 1
     </select>
 

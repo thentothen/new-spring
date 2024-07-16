@@ -13,7 +13,6 @@ import com.example.demo.service.RedisService;
 import com.example.demo.utils.StaticVal;
 
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpSession;
 
 import java.util.List;
 import java.util.Map;
@@ -31,8 +30,6 @@ public class LoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(jakarta.servlet.http.HttpServletRequest request,
             jakarta.servlet.http.HttpServletResponse response, Object handler) throws Exception {
         
-        HttpSession session = request.getSession();
-
         List<String> tokenList = redisService.getList("Token");
         System.out.println(tokenList);
         
