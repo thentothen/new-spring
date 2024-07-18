@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.mapper.DictionaryMapper">
+    <select id="getList" resultType="com.example.demo.entity.DictionaryUse">
+       select *
+        from dictionary AS t1
+    </select>
+
+    <select id="add">
+       INSERT INTO dictionary 
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="record.desc != null and record.desc != ''">
+                    `desc`,
+                </if>
+                <if test="record.attr != null and record.attr != ''">
+                    `attr`,
+                </if>
+                <if test="record.code != null and record.code != ''">
+                    `code`,
+                </if>
+                 <if test="record.value1 != null and record.value1 != ''">
+                    `value1`,
+                </if>
+                <if test="record.value2 != null and record.value2 != ''">
+                    `value2`,
+                </if>
+                <if test="record.value3 != null and record.value3 != ''">
+                    `value3`,
+                </if>
+                <if test="record.value4 != null and record.value4 != ''">
+                    `value4`,
+                </if>
+            </trim>
+             <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="record.desc != null and record.desc != ''">
+                    #{record.desc},
+                </if>
+                <if test="record.attr != null and record.attr != ''">
+                    #{record.attr},
+                </if>
+                <if test="record.code != null and record.code != ''">
+                    #{record.code},
+                </if>
+                <if test="record.value1 != null and record.value1 != ''">
+                    #{record.value1},
+                </if>
+                <if test="record.value2 != null and record.value2 != ''">
+                    #{record.value2},
+                </if>
+                <if test="record.value3 != null and record.value3 != ''">
+                    #{record.value3},
+                </if>
+                <if test="record.value4 != null and record.value4 != ''">
+                    #{record.value4},
+                </if>
+            </trim>
+    </select>
+
+     <update id="update">
+       UPDATE dictionary 
+       <set>
+        <if test="record.desc != null">`desc` = #{record.desc},</if>
+        <if test="record.attr != null">attr = #{record.attr},</if>
+        <if test="record.code != null">code = #{record.code},</if>
+        <if test="record.value1 != null">value1 = #{record.value1},</if>
+        <if test="record.value2 != null">value2 = #{record.value2},</if>
+        <if test="record.value3 != null">value3 = #{record.value3},</if>
+        <if test="record.value4 != null">value4 = #{record.value4},</if>
+        </set>
+        WHERE id=#{record.id}
+    </update>
+
+    <select id="delete">
+      DELETE FROM `dictionary` WHERE `id` = #{id}
+    </select>
+</mapper>

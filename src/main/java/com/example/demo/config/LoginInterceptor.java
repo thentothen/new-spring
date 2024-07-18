@@ -11,6 +11,7 @@ import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.demo.service.RedisService;
 import com.example.demo.utils.StaticVal;
+import com.example.demo.utils.TokenUtil;
 
 import jakarta.servlet.http.Cookie;
 
@@ -31,7 +32,6 @@ public class LoginInterceptor implements HandlerInterceptor {
             jakarta.servlet.http.HttpServletResponse response, Object handler) throws Exception {
         
         List<String> tokenList = redisService.getList("Token");
-        System.out.println(tokenList);
         
         Cookie[] cookie = request.getCookies();
         for (int i = 0; i < cookie.length; i++) {
@@ -41,7 +41,7 @@ public class LoginInterceptor implements HandlerInterceptor {
                                                 .anyMatch(_i->_i.equals(cook.getValue().toString()));
                 
                 try {
-                    Map<String, Claim> claims = verifyToken(cook.getValue());
+                    Map<String, Claim> claims = TokenUtil.verifyToken(cook.getValue());
 
                     System.out.println(claims.get("user_id").asString());        
                     System.out.println(claims.get("user_name").asString());  
@@ -60,21 +60,6 @@ public class LoginInterceptor implements HandlerInterceptor {
         // token 无效，返回 401 未授权状态
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         return false;
-    }
-
-    public static Map<String, Claim> verifyToken(String token) {
-        DecodedJWT jwt = null;
-        try {
-            JWTVerifier verifier = JWT.require(Algorithm.HMAC256(StaticVal.SECRET)).build();
-            jwt = verifier.verify(token);
-            System.out.println("start:  "+jwt.getIssuedAt());
-            System.out.println("end: "+jwt.getExpiresAt());
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw(e);
-            //token 校验失败, 抛出Token验证非法异常
-        }
-        return jwt.getClaims();
     }
 
 }

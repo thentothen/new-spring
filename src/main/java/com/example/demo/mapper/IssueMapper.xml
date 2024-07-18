@@ -13,7 +13,7 @@
 
     <select id="addIssues">
        INSERT INTO issue 
-       <trim prefix="(" suffix=")" suffixOverrides=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
                 <if test="record.dealing != null and record.dealing != ''">
                     dealing,
                 </if>

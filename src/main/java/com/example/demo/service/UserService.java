@@ -71,7 +71,6 @@ public class UserService {
             session.setAttribute("username", username);
             try {
                 String token = TokenUtil.createToken(user.getId(), user.getUsername());
-                System.out.println(token);
                 
                 List<String> tokenList = Optional.ofNullable(redisService.getList("Token")).orElse(new ArrayList<>());
 

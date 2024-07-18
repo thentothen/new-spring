@@ -86,10 +86,10 @@
                     if(res.data){
                         alert("登录成功");
 
-                        if(Location.search) {
-                            location.search.split('?').forEach(item=>{
+                        if( window.location.search) {
+                            window.location.search.split('?')[1]?.split('&').forEach(item=>{
                                 if(item.split('=')[0]==='redirect'){
-                                    window.Location.href = item.split('=')[1]
+                                    window.location.href = decodeURIComponent( item.split('=')[1]);
                                 }
                             })
                         }

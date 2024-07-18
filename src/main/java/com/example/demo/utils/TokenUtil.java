@@ -50,8 +50,8 @@ public class TokenUtil {
         try {
             JWTVerifier verifier = JWT.require(Algorithm.HMAC256(StaticVal.SECRET)).build();
             jwt = verifier.verify(token);
-            System.out.println("start:  "+jwt.getIssuedAt());
-            System.out.println("end: "+jwt.getExpiresAt());
+            // System.out.println("start:  "+jwt.getIssuedAt());
+            // System.out.println("end: "+jwt.getExpiresAt());
         } catch (Exception e) {
             e.printStackTrace();
             throw(e);

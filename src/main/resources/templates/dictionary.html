@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Dictionary</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <style>
+         body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            width: 100%;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            width: 150px;
+            background-color: #f2f2f2;
+        }
+        input{
+            width: 130px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div style="display: flex;margin-bottom: 12px;">
+            <button style="height: 32px;width: 80px;" onclick="add()">add</button>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>  
+                    <th scope="col">code</th>
+                    <th scope="col">attr</th>
+                    <th scope="col">desc</th>
+                    <th scope="col">value1</th>
+                    <th scope="col">value2</th>
+                    <th scope="col">value3</th>
+                    <th scope="col">value4</th>
+                    <th scope="col" style="width: 100px;">operate</th>
+                </tr>
+            </thead>
+            <tbody class="tbody">
+            </tbody>
+        </table>
+    </div>
+    <script>
+        $(()=>{
+            getList()
+        })
+        function getList(){
+            $.ajax({
+                url:'/dictionary/list',
+                method: 'get',
+                contentType: 'application/json',
+                success: function(res){
+                   console.log(res);
+                   $('tbody').empty();
+                   res.data.forEach(item => {
+                        $('tbody').append(`
+                            <tr>
+                                <td><span class='text'>${item.code}</span> <input id='code' class='edit' value="${item.code}" style="display:none;"/></td>
+                                <td><span class='text'>${item.attr}</span> <input id='attr' class='edit' value="${item.attr}" style="display:none;"/></td>
+                                <td><span class='text'>${item.desc}</span> <input id='desc' class='edit' value="${item.desc}" style="display:none;"/></td>
+                                <td><span class='text'>${item.value1}</span> <input id='value1' class='edit' value="${item.value1}" style="display:none;"/></td>
+                                <td><span class='text'>${item.value2}</span> <input id='value2' class='edit' value="${item.value2}" style="display:none;"/></td>
+                                <td><span class='text'>${item.value3}</span> <input id='value3' class='edit' value="${item.value3}" style="display:none;"/></td>
+                                <td><span class='text'>${item.value4}</span> <input id='value4' class='edit' value="${item.value4}" style="display:none;"/></td>
+                                <td>
+                                    <span class='text' onclick='changeToEdit(${item.id})'>修改</span> 
+                                    <span class='edit' onclick='save(${item.id})' style="display:none;">保存</span> 
+                                    <span onclick='deleteById(${item.id})'>删除</span> 
+                                </td>
+                            </tr>
+                            `)
+                   });
+                   
+                }
+            })
+        }
+        function changeToEdit(){
+            event.target.parentNode.parentNode.querySelectorAll(".edit").forEach(node=>node.style.display='initial') ;
+            event.target.parentNode.parentNode.querySelectorAll(".text").forEach(node=>node.style.display='none');
+        }
+        function add(){
+            $('tbody').append(`
+                <tr>
+                    <td><input id='code'/> </td>
+                    <td><input id='attr'/> </td>
+                    <td><input id='desc'/> </td>
+                    <td><input id='value1'/> </td>
+                    <td><input id='value2'/> </td>
+                    <td><input id='value3'/> </td>
+                    <td><input id='value4'/> </td>
+                    <td><span onclick='save()'>保存</span> <span>删除</span></td>
+                </tr>
+            `)
+        }
+
+        function save(id){
+            console.log(id);
+            let data = {
+                code: event.target.parentNode.parentNode.querySelector("#code").value,
+                attr: event.target.parentNode.parentNode.querySelector("#attr").value,
+                desc: event.target.parentNode.parentNode.querySelector("#desc").value,
+                value1: event.target.parentNode.parentNode.querySelector("#value1").value,
+                value2: event.target.parentNode.parentNode.querySelector("#value2").value,
+                value3: event.target.parentNode.parentNode.querySelector("#value3").value,
+                value4: event.target.parentNode.parentNode.querySelector("#value4").value,
+            }
+            if(id){
+                $.ajax({
+                url:'/dictionary/update',
+                method: 'post',
+                data: JSON.stringify({
+                    id,
+                    ...data
+                }),
+                contentType: 'application/json',
+                success: function(res){
+                    getList();
+                }})
+            }else{
+                $.ajax({
+                url:'/dictionary/add',
+                method: 'post',
+                data: JSON.stringify(data),
+                contentType: 'application/json',
+                success: function(res){
+                            getList();
+                        }
+                })
+            }
+        }
+
+        function deleteById(id){
+            if(id){
+                $.ajax({
+                url:'/dictionary/delete',
+                method: 'get',
+                data: {id},
+                contentType: 'application/json',
+                success: function(res){
+                            getList();
+                        }
+                })
+            }
+        }
+    </script>
+</body>
+</html>

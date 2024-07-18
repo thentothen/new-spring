@@ -16,7 +16,6 @@
     </environments>
     <!-- 扫描映射文件 -->
     <mappers>
-        <mapper resource="com/example/demo/mapper/ServiceAreaMapper.xml"/>
     </mappers>
     <settings>
         <setting name="mapUnderscoreToCamelCase" value="true">

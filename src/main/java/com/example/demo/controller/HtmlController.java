@@ -12,4 +12,9 @@ public class HtmlController {
         return "login";
     }
 
+    @GetMapping("/dictionary.html")
+    public String dictionary1(Model model) {
+        return "dictionary";
+    }
+
 }
